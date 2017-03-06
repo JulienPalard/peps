@@ -104,17 +104,17 @@ Hosting
 Domain Name and URL
 '''''''''''''''''''
 
-We can distinguish the lang by changing one of: CCTLD, path segment,
-or subdomain.
+Different translation can be told appart by changing one of: CCTLD,
+path segment, or subdomain.
 
 Buying a CCTLD for each translations is expensive, time-consuming, and
-sometimes already used.
+sometimes almost impossible when already registered.
 
 Using subdomains like "es.docs.python.org" or "docs.es.python.org"
-does not looks natural or clear.
+does not looks natural.
 
-So we should put use the path to contain the language information,
-like "docs.python.org/de/".
+Using the path looks a bit more readable, something like:
+"docs.python.org/de/".
 
 As for version, sphinx-doc does not support compiling for multiple
 languages, so we'll have full builds rooted under a path, exactly like
@@ -126,8 +126,6 @@ prefer "docs.python.org/de/3.6/".
 So we should use the following pattern:
 "docs.python.org/LANGUAGE_TAG/VERSION/".
 
-See `Language Tag`_ for the rationale about it.
-
 We should not move current documentation to "/en/" but we can redirect
 "/en/" to "/" to be kind with humans manually replacing a language tag
 with "en".
@@ -135,20 +133,20 @@ with "en".
 Language Tag
 ''''''''''''
 
-Typical notation for language tags is the IETF Language Tag [3]_,
+A common notation for language tags is the IETF Language Tag [3]_,
 [4]_, based on ISO 639, alghough gettext uses ISO 639 tags with
 underscores instead of dashes to join tags [5]_.
 
-It is more common to see dashes instead of underscores in URLS [6]_,
+It is more common to see dashes instead of underscores in URLs [6]_,
 so we should use IETF language tags, even if sphinx uses gettext
-internally: URL are not meant to leak underlying implementation.
+internally: URLs are not meant to leak the underlying implementation.
 
 It's uncommon to see capitalized letters in URLs, so it may hurt
 readability by attracting the eye on it:
 "https://docs.python.org/pt-BR/3.6/library/stdtypes.html".  RFC 5646
 (Tags for Identifying Languages (IETF)) section-2.1 [7]_ tells the
-tags are not case sensitive.  As RFC allows us to do so and it enhances
-readability, we should use lowercased tags.
+tags are not case sensitive.  As the RFC allows lower case, and it
+enhances readability, we should use lowercased tags.
 
 It's redundant to display both language and country code if they're
 the same, typically "de-DE", "fr-FR", although it make sense,
