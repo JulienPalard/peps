@@ -169,9 +169,11 @@ Building new translations is like building new versions, so we're
 adding complexity, but not that much.
 
 Two steps should be configurable distinctively: Build a new language,
-and add it to the language picker.  This allows a transition phase
+and add it to the language picker.  This allows a transition step
 between "we accepted the language" and "it is translated enough to be
-made public".
+made public", during this step, translators can review their
+modifications on d.p.o without having to build the documentation
+locally.
 
 From the translations repositories, only the ``.po`` files should be
 opened by the docsbuild-script to keep the attack surface and probable
@@ -214,16 +216,27 @@ their local channels like "#python-fr" for french translators.
 Repository for Po Files
 '''''''''''''''''''''''
 
-Each language should have its own repository on the `Python github
-organization`_.
+Considering that each translation teams may want to use different
+translation tools, and that those tools should easily be synchronized
+with git, all translations should expose their ``.po`` files via a git
+repository.
 
-Each repository should be named according to the following template:
-``python-doc-LANGUAGE_TAG``.  See `Language Tag`_ below.
+Considering that each translation will be exposed via git
+repositories, and that Python has migrated to github, translations
+should be hosted on github.
 
-.. _Python github organization: https://github.com/python/
+For consistency and discoverability, all translations should be in the
+same github organization and named according to a common pattern.
+
+Considering that we want translations to be official, and that Python
+already have a github organization, translations should be hosted as
+projects of the `Python github organization`_.
+
+For consistency, translations repositories should be called
+``python-docs-LANGUAGE_TAG`` [22]_.
 
 The docsbuild-scripts may enforce this rule by refusing to fetch
-outside of the Python organization.
+outside of the Python organization or a wrongly named repository.
 
 The CLA bot may be used on the translation repositories, but with a
 limited effect as local coordinators may synchronize themselves
@@ -235,6 +248,8 @@ or different branches.  Storing them on different repositories will
 probably pollute the Python github organization.  As it is typical and
 natural to use branches to separate versions, branches should be used
 to do so.
+
+.. _Python github organization: https://github.com/python/
 
 
 Translation tools
@@ -307,24 +322,25 @@ problem. We'll however follow the `New Translation Procedure`_.
 Patch docsbuild-scripts to Compile Translations
 -----------------------------------------------
 
-Docsbuild-script should be patched, in a way similar than `Pull
-Request #8`_, but simplier as all repositories will be hosted in the
-same organization, and named following an identical template, and
-versions stored in branches.
+Docsbuild-script must be patched to:
 
-.. _Pull Request #8: https://github.com/python/docsbuild-scripts/pull/8
+ - List the languages tags to build along with the branches to build.
+ - List the languages tags to display in the language picker.
+ - Find translation repositories by formatting
+   "github.com:python/python-docs-{language_tag}.git" (See
+   `Repository for Po Files`_)
+ - Build translations for each branches and each languages
 
-Patched docsbuild-scripts may start building translations when ready,
-as translations will only be made public by the implementation of the
-language picker.
+Patched docsbuild-scripts must only open ``.po`` files from
+translation repositories.
 
 
 Create sphinx-doc Language Picker
 ---------------------------------
 
-Highly similar to the version picker we have to implement a language
-picker. This language picker should be configurable to hide or show a
-given language.
+Highly similar to the version picker, a language picker must be
+implemented. This language picker must be configurable to hide or
+show a given language.
 
 
 Enhance rendering of untranslated fuzzy translations
@@ -342,8 +358,7 @@ New Translation Procedure
 Designate a Coordinator
 -----------------------
 
-The first step is to designate a coordinator, see `Language Team`_.
-
+The first step is to designate a coordinator, see `Language Team`_,
 The coordinator must sign the CLA.
 
 TODO: Coordinators should probably be listed, but where?
@@ -352,19 +367,17 @@ TODO: Coordinators should probably be listed, but where?
 Create github repository
 ------------------------
 
-A repository on the github Python organization should be created,
-named: python-doc-LANGUAGE_TAG, see `Repository For Po
-Files`_.  Coordinator should be granted push permission on this
-repository.
+Create a repository named "python-docs-{LANGUAGE_TAG}" on the Python
+github organization (See `Repository For Po Files`_.), and grant the
+language coordinator push rights to this repository.
 
 
 Add translation in docsbuild-scripts
 ------------------------------------
 
-As soon as the translation hits its firsts commits, docsbuild-scripts
-can be told to build it, so translators (using external tools like
-Transifex) can review their work without building the documentation
-locally, see `Fetching And Building Translations`_.
+As soon as the translation hits its firsts commits, update the
+docsbuild-scripts configuration to build the translation (but not
+displaying it in the language picker).
 
 
 Add translation to the language picker
@@ -464,6 +477,9 @@ References
 
 .. [21] Spanish translation
    (http://docs.python.org.ar/tutorial/3/index.html)
+
+.. [22] [Python-Dev] Translated Python documentation: doc vs docs
+   (https://mail.python.org/pipermail/python-dev/2017-February/147472.html)
 
 Copyright
 =========
