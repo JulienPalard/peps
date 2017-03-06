@@ -16,13 +16,13 @@ Abstract
 
 The intent of this PEP is to make existing translations of the Python
 Documentation more accessible and discoverable.  By doing so,
-motivating new translators and new translations.
+attracting and motivating new translators and new translations.
 
 
 Motivation
 ==========
 
-On the french ``#python-fr`` IRC channel on freenode, it's common to
+On the french ``#python-fr`` IRC channel on freenode, it's not rare to
 meet people who don't speak english and so are unable to read the
 Python official documentation.  Python wants to be widely available,
 for all users, in any language: that's also why Python 3 now allows
@@ -32,9 +32,11 @@ https://www.python.org/dev/peps/pep-3131/#rationale
 There are a least 3 groups of people who are translating the Python
 documentation in their mother language (french [16]_ [17]_ [18]_,
 japanese [19]_ [20]_, spanish [21]_), even though their translation
-are not visible on d.p.o.  This PEP proposes to move translations on
-docs.python.org so they can easily be found by newcomers and potential
-translators.
+are not visible on d.p.o.  Other less visible and less organized
+groups are also translating in their mother language, we heard of
+Russian, Chinese, Korean, maybe some others we didn't found yet.  This
+PEP proposes to move translations on docs.python.org so they can
+easily be found by newcomers and potential translators.
 
 Japanese team currently (March 2017) translated ~80% of the
 documentation, french team ~20%. French translation went from 6% to
@@ -42,9 +44,9 @@ documentation, french team ~20%. French translation went from 6% to
 team can be faster than documentation mutates.
 
 
-Quoting Xiang Zhang:
+Quoting Xiang Zhang about Chinese translations:
 
-> I have seen several groups trying to translate part of our official
+  I have seen several groups trying to translate part of our official
   doc. But their efforts are disperse and quickly become lost because
   they are not organized to work towards a single common result and
   their results are hold anywhere on the Web and hard to find. An
@@ -57,14 +59,27 @@ Rationale
 Translation
 -----------
 
-Bug tracker
-'''''''''''
+Issue tracker
+'''''''''''''
 
-As all translation have their own github project, they should use the
-associated github issue tracker instead of b.p.o, avoiding a mix of
-languages on b.p.o.  Language team coordinators are responsible of
-redirecting from b.p.o to their specific github issue tracker every
-issue opened for their language.
+Considering that issues opened about translations may be written in
+the translation language, they should be placed outside b.p.o to avoid
+mixing languages.
+
+As all translation must have their own github project (see `Repository
+for Po Files`_), they must use the associated github issue tracker.
+
+Considering the noise induced by translation issues redacted in any
+languages which may beyond every warnings land in b.p.o, triage will
+have to be done.  Considering that translations already exist and are
+not actually a source of noise in b.p.o, an unmanageable amount of
+work is not to be expected.  Considering that Xiang Zhang and Victor
+Stinner are already triaging, and Julien Palard is willing to help on
+this task, noise on b.p.o is not to be expected.
+
+Also, language team coordinators (see `Language Team`_) should help
+triaging b.p.o by properly indicating, in the issue author language if
+needed, the right issue tracker.
 
 
 Branches
@@ -78,11 +93,9 @@ As documentation Makefile won't be modified for old realses like 3.3,
 and passing options to sphinx is mandatory to change the language,
 only 2.7, 3.5, and 3.6 branches will be translated [12]_.
 
-Default (master) branch may not be translated actively, but as
-translation memory may translate a consequent part of it, if a team
-has nothing else to translate, and want to do it, they can. In any
-way, docsbuild-scripts have to build it, so a team can preview their
-translations before a Python release, to be ready.
+Development branch (master) has a lower translation priority than
+stable branches.  But docsbuild-scripts will build it so it is
+possible for a team to work on it to be ready for the next release.
 
 
 Hosting
