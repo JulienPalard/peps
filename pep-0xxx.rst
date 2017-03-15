@@ -63,8 +63,8 @@ Issue tracker
 '''''''''''''
 
 Considering that issues opened about translations may be written in
-the translation language, they should be placed outside b.p.o to avoid
-mixing languages.
+the translation language, which can be considered noise but at least
+is inconsistent, issues should be placed outside b.p.o.
 
 As all translation must have their own github project (see `Repository
 for Po Files`_), they must use the associated github issue tracker.
@@ -90,12 +90,13 @@ Translation teams should focus on last stable versions, and use tools
 done in one branch to other branches.
 
 As documentation Makefile won't be modified for old realses like 3.3,
-and passing options to sphinx is mandatory to change the language,
-only 2.7, 3.5, and 3.6 branches will be translated [12]_.
+and passing options to sphinx-build is mandatory to change the
+language, only 2.7, 3.5, and 3.6 branches will be translated [12]_.
 
-Development branch (master) has a lower translation priority than
-stable branches.  But docsbuild-scripts will build it so it is
-possible for a team to work on it to be ready for the next release.
+Development branch (master) should have a lower translation priority
+than stable branches.  But docsbuild-scripts should build it anyway so
+it is possible for a team to work on it to be ready for the next
+release.
 
 
 Hosting
@@ -105,30 +106,59 @@ Domain Name and URL
 '''''''''''''''''''
 
 Different translation can be told appart by changing one of: CCTLD,
-path segment, or subdomain.
+path segment, subdomain, or by content negociation.
 
 Buying a CCTLD for each translations is expensive, time-consuming, and
-sometimes almost impossible when already registered.
+sometimes almost impossible when already registered, this solution
+should be avoided.
 
-Using subdomains like "es.docs.python.org" or "docs.es.python.org"
-does not looks natural.
+Using subdomains like "es.docs.python.org" or "docs.es.python.org" is
+possible but confusing ("is it `es.doc` or `doc.es`?"), underscores or
+hyphens may also look strange in subdomains like
+`pt-br.doc.python.org`. SEOMoz [23]_ correlated the presence of
+hyphens as a negative factor. Usage of underscores in subdomain is
+prohibited by the RFC1123 [24]_, section 2.1. Finally using subdomains
+means creating SSL certificates for each languages, which is more
+maintenance, and will probably causes us troubles in language pickers
+if, like for version picker, we want a preflight to check if the
+translation exists in the given version: preflight will probably be
+blocked by same-origin-policy.
 
-Using the path looks a bit more readable, something like:
-"docs.python.org/de/".
+Using content negociation (HTTP headers ``Accept-Language`` in the
+request and ``Vary: Accept-Language``) leads to a bad user experience
+where they can't easily change the language. According to Mozilla:
+"This header is a hint to be used when the server has no way of
+determining the language via another way, like a specific URL, that is
+controlled by an explicit user decision." [25]_.  As we want to be
+able to easily change the language, we should not use the content
+negociation as a main language determination, so we need somthing
+else.
+
+Last solution is to use the path, which looks looks readable, allows
+for an easy switch from a language to another, and nicely accepts
+hyphens. Typically something like: "docs.python.org/de/".
 
 As for version, sphinx-doc does not support compiling for multiple
 languages, so we'll have full builds rooted under a path, exactly like
-we're already doing with versions.  So we can have
-"docs.python.org/de/3.6/" or "docs.python.org/3.6/de/".  As existing
-version are changing more often than existing languages, we should
-prefer "docs.python.org/de/3.6/".
+we're already doing with versions.
+
+So we can have "docs.python.org/de/3.6/" or
+"docs.python.org/3.6/de/".Question is "Does the language contains
+multiple version or does version contains multiple languages?" As
+versions exists in any cases, and translations for a given version may
+or may not exists, we may prefer "docs.python.org/3.6/de/", but doing
+so scatter languages everywhere. Having "/de/3.6/" is clearer about
+"everything under /de/ is written in deutch".  Having the version at
+the end is also an habit taken by readers of the documentation: they
+like to easily change the version by changing the end of the path.
 
 So we should use the following pattern:
 "docs.python.org/LANGUAGE_TAG/VERSION/".
 
 We should not move current documentation to "/en/" but we can redirect
-"/en/" to "/" to be kind with humans manually replacing a language tag
-with "en".
+"/en/" to "/" to be nice with humans manually replacing a language tag
+by "en".
+
 
 Language Tag
 ''''''''''''
@@ -141,12 +171,12 @@ It is more common to see dashes instead of underscores in URLs [6]_,
 so we should use IETF language tags, even if sphinx uses gettext
 internally: URLs are not meant to leak the underlying implementation.
 
-It's uncommon to see capitalized letters in URLs, so it may hurt
-readability by attracting the eye on it:
-"https://docs.python.org/pt-BR/3.6/library/stdtypes.html".  RFC 5646
-(Tags for Identifying Languages (IETF)) section-2.1 [7]_ tells the
-tags are not case sensitive.  As the RFC allows lower case, and it
-enhances readability, we should use lowercased tags.
+It's uncommon to see capitalized letters in URLs, and docs.python.org
+don't use any, so it may hurt readability by attracting the eye on it,
+like in: "https://docs.python.org/pt-BR/3.6/library/stdtypes.html".
+RFC 5646 (Tags for Identifying Languages (IETF)) section-2.1 [7]_
+tells the tags are not case sensitive.  As the RFC allows lower case,
+and it enhances readability, we should use lowercased tags.
 
 It's redundant to display both language and country code if they're
 the same, typically "de-DE", "fr-FR", although it make sense,
@@ -348,7 +378,7 @@ Enhance rendering of untranslated fuzzy translations
 
 It's an opened sphinx issue [9]_, but we'll need it so we'll have to
 work on it.  Translated, fuzzy, and untranslated paragraphs should be
-differentiated.  (Fuzzy paragraphs have to warn the reader what it's
+differentiated.  (Fuzzy paragraphs have to warn the reader what he's
 reading may be out of date.)
 
 
@@ -480,6 +510,15 @@ References
 
 .. [22] [Python-Dev] Translated Python documentation: doc vs docs
    (https://mail.python.org/pipermail/python-dev/2017-February/147472.html)
+
+.. [23] Domains - SEO Best Practices | Moz
+   (https://moz.com/learn/seo/domain)
+
+.. [24] Requirements for Internet Hosts -- Application and Support
+   (https://www.ietf.org/rfc/rfc1123.txt)
+
+.. [25] Accept-Language
+   (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Language)
 
 Copyright
 =========
