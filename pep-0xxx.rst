@@ -365,6 +365,13 @@ Patched docsbuild-scripts must only open ``.po`` files from
 translation repositories.
 
 
+List coordinators in the devguide
+---------------------------------
+
+Add a page or a section with an empty list of coordinators to the
+devguide, each new coordinators will be added to this list.
+
+
 Create sphinx-doc Language Picker
 ---------------------------------
 
@@ -391,7 +398,8 @@ Designate a Coordinator
 The first step is to designate a coordinator, see `Language Team`_,
 The coordinator must sign the CLA.
 
-TODO: Coordinators should probably be listed, but where?
+The coordinator should be added to a list of translation coordinator
+on the devguide.
 
 
 Create github repository
