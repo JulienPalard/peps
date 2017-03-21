@@ -47,7 +47,7 @@ documentation in their mother language (french [16]_ [17]_ [18]_,
 japanese [19]_ [20]_, spanish [21]_), even though their translation
 are not visible on d.p.o.  Other less visible and less organized
 groups are also translating in their mother language, we heard of
-Russian, Chinese, Korean, maybe some others we didn't found yet.  This
+Russian, Chinese, Korean, maybe some others we didn't find yet.  This
 PEP defines rules to move translations on docs.python.org so they can
 easily be found by developers, newcomers and potential translators.
 
