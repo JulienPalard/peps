@@ -18,6 +18,19 @@ The intent of this PEP is to make existing translations of the Python
 Documentation more accessible and discoverable.  By doing so,
 attracting and motivating new translators and new translations.
 
+Translated documentation will be hosted on python.org.  Examples of
+two active translation teams:
+
+* http://docs.python.org/fr/: French
+* http://docs.python.org/jp/: Japanese
+
+http://docs.python.org/en/ will redirect to http://docs.python.org/.
+
+Sources of translated documentation will be hosted in the Python
+Documentation organization on GitHub: https://github.com/python-docs/.
+Contributors will have to sign the Python Contributor Agreement (CLA)
+and the license will be the PSF License.
+
 
 Motivation
 ==========
@@ -25,7 +38,7 @@ Motivation
 On the french ``#python-fr`` IRC channel on freenode, it's not rare to
 meet people who don't speak english and so are unable to read the
 Python official documentation.  Python wants to be widely available,
-for all users, in any language: that's also why Python 3 now allows
+to all users, in any language: that's also why Python 3 now allows
 any non-ASCII identifiers:
 https://www.python.org/dev/peps/pep-3131/#rationale
 
@@ -35,11 +48,11 @@ japanese [19]_ [20]_, spanish [21]_), even though their translation
 are not visible on d.p.o.  Other less visible and less organized
 groups are also translating in their mother language, we heard of
 Russian, Chinese, Korean, maybe some others we didn't found yet.  This
-PEP proposes to move translations on docs.python.org so they can
-easily be found by newcomers and potential translators.
+PEP defines rules to move translations on docs.python.org so they can
+easily be found by developers, newcomers and potential translators.
 
-Japanese team currently (March 2017) translated ~80% of the
-documentation, french team ~20%. French translation went from 6% to
+The Japanese team currently (March 2017) translated ~80% of the
+documentation, french team ~20%.  French translation went from 6% to
 23% in 2016 [13]_ with 7 contributors [14]_, proving a translation
 team can be faster than documentation mutates.
 
@@ -47,9 +60,9 @@ team can be faster than documentation mutates.
 Quoting Xiang Zhang about Chinese translations:
 
   I have seen several groups trying to translate part of our official
-  doc. But their efforts are disperse and quickly become lost because
+  doc.  But their efforts are disperse and quickly become lost because
   they are not organized to work towards a single common result and
-  their results are hold anywhere on the Web and hard to find. An
+  their results are hold anywhere on the Web and hard to find.  An
   official one could help ease the pain.
 
 
@@ -64,7 +77,8 @@ Issue tracker
 
 Considering that issues opened about translations may be written in
 the translation language, which can be considered noise but at least
-is inconsistent, issues should be placed outside b.p.o.
+is inconsistent, issues should be placed outside `bugs.python.org
+<https://bugs.python.org/>`_ (b.p.o).
 
 As all translation must have their own github project (see `Repository
 for Po Files`_), they must use the associated github issue tracker.
@@ -89,11 +103,17 @@ Translation teams should focus on last stable versions, and use tools
 (scripts, translation memory, …) to automatically translate what is
 done in one branch to other branches.
 
-As documentation Makefile won't be modified for old realses like 3.3,
-and passing options to sphinx-build is mandatory to change the
-language, only 2.7, 3.5, and 3.6 branches will be translated [12]_.
+.. note::
+   Translation memories are a kind of database of previously translated
+   paragraphs, even removed ones.  See also `Sphinx Internationalization
+   <http://www.sphinx-doc.org/en/stable/intl.html>`_.
 
-Development branch (master) should have a lower translation priority
+The three stable branches will be translated [12]_: 2.7, 3.5, and 3.6.
+The scripts to build the documentation of older branches have to be
+modified to support translation [12]_, whereas these branches now only
+accept security-only fixes.
+
+The development branch (master) should have a lower translation priority
 than stable branches.  But docsbuild-scripts should build it anyway so
 it is possible for a team to work on it to be ready for the next
 release.
@@ -102,10 +122,11 @@ release.
 Hosting
 -------
 
-Domain Name and URL
-'''''''''''''''''''
+Domain Name, Content negociation and URL
+''''''''''''''''''''''''''''''''''''''''
 
-Different translation can be told appart by changing one of: CCTLD,
+Different translation can be told appart by changing one of:
+Country Code Top Level Domain (CCTLD),
 path segment, subdomain, or by content negociation.
 
 Buying a CCTLD for each translations is expensive, time-consuming, and
@@ -113,20 +134,21 @@ sometimes almost impossible when already registered, this solution
 should be avoided.
 
 Using subdomains like "es.docs.python.org" or "docs.es.python.org" is
-possible but confusing ("is it `es.doc` or `doc.es`?"), underscores or
-hyphens may also look strange in subdomains like
-`pt-br.doc.python.org`. SEOMoz [23]_ correlated the presence of
-hyphens as a negative factor. Usage of underscores in subdomain is
-prohibited by the RFC1123 [24]_, section 2.1. Finally using subdomains
-means creating SSL certificates for each languages, which is more
+possible but confusing ("is it `es.docs.python.org` or `docs.es.python.org`?").
+Hyphens in subdomains like
+`pt-br.doc.python.org` in uncommon and SEOMoz [23]_ correlated the presence of
+hyphens as a negative factor.  Usage of underscores in subdomain is
+prohibited by the RFC1123 [24]_, section 2.1.  Finally using subdomains
+means creating TLS certificates for each languages, which is more
 maintenance, and will probably causes us troubles in language pickers
 if, like for version picker, we want a preflight to check if the
 translation exists in the given version: preflight will probably be
-blocked by same-origin-policy.
+blocked by same-origin-policy.  Wildcard TLS certificates are very
+expensive.
 
 Using content negociation (HTTP headers ``Accept-Language`` in the
 request and ``Vary: Accept-Language``) leads to a bad user experience
-where they can't easily change the language. According to Mozilla:
+where they can't easily change the language.  According to Mozilla:
 "This header is a hint to be used when the server has no way of
 determining the language via another way, like a specific URL, that is
 controlled by an explicit user decision." [25]_.  As we want to be
@@ -134,20 +156,21 @@ able to easily change the language, we should not use the content
 negociation as a main language determination, so we need somthing
 else.
 
-Last solution is to use the path, which looks looks readable, allows
+Last solution is to use the URL path, which looks readable, allows
 for an easy switch from a language to another, and nicely accepts
-hyphens. Typically something like: "docs.python.org/de/".
+hyphens.  Typically something like: "docs.python.org/de/".  Example
+with a hyphen: "docs.python.org/pt-BR/"
 
 As for version, sphinx-doc does not support compiling for multiple
 languages, so we'll have full builds rooted under a path, exactly like
 we're already doing with versions.
 
 So we can have "docs.python.org/de/3.6/" or
-"docs.python.org/3.6/de/".Question is "Does the language contains
+"docs.python.org/3.6/de/".  Question is "Does the language contains
 multiple version or does version contains multiple languages?" As
 versions exists in any cases, and translations for a given version may
 or may not exists, we may prefer "docs.python.org/3.6/de/", but doing
-so scatter languages everywhere. Having "/de/3.6/" is clearer about
+so scatter languages everywhere.  Having "/de/3.6/" is clearer about
 "everything under /de/ is written in deutch".  Having the version at
 the end is also an habit taken by readers of the documentation: they
 like to easily change the version by changing the end of the path.
@@ -155,17 +178,19 @@ like to easily change the version by changing the end of the path.
 So we should use the following pattern:
 "docs.python.org/LANGUAGE_TAG/VERSION/".
 
-We should not move current documentation to "/en/" but we can redirect
-"/en/" to "/" to be nice with humans manually replacing a language tag
-by "en".
+Current documentation is not moved to "/en/", but "docs.python.org/en/"
+will redirect to "docs.python.org/en/".
 
 
 Language Tag
 ''''''''''''
 
-A common notation for language tags is the IETF Language Tag [3]_,
-[4]_, based on ISO 639, alghough gettext uses ISO 639 tags with
-underscores instead of dashes to join tags [5]_.
+A common notation for language tags is the IETF Language Tag [3]_
+[4]_ based on ISO 639, alghough gettext uses ISO 639 tags with
+underscores (ex: ``pt_BR``) instead of dashes to join tags [5]_
+(ex: ``pt-BR``).  Examples of IETF Language Tags: ``fr`` (French),
+``jp`` (Japanese), ``pt-BR`` (Orthographic formulation of 1943 -
+Official in Brazil).
 
 It is more common to see dashes instead of underscores in URLs [6]_,
 so we should use IETF language tags, even if sphinx uses gettext
@@ -176,7 +201,8 @@ don't use any, so it may hurt readability by attracting the eye on it,
 like in: "https://docs.python.org/pt-BR/3.6/library/stdtypes.html".
 RFC 5646 (Tags for Identifying Languages (IETF)) section-2.1 [7]_
 tells the tags are not case sensitive.  As the RFC allows lower case,
-and it enhances readability, we should use lowercased tags.
+and it enhances readability, we should use lowercased tags like
+``pt-br``.
 
 It's redundant to display both language and country code if they're
 the same, typically "de-DE", "fr-FR", although it make sense,
@@ -192,7 +218,7 @@ So we should use IETF language tags, lowercased, like ``/fr/``,
 Fetching And Building Translations
 ''''''''''''''''''''''''''''''''''
 
-Currently a script is building the documentation [8]_.  This script
+Currently docsbuild-scripts are building the documentation [8]_.  These scripts
 should be modified to fetch and build translations.
 
 Building new translations is like building new versions, so we're
@@ -218,12 +244,11 @@ Community
 Mailing List
 ''''''''''''
 
-We may create a new mailing list or use an existing one, like
-`i18n-sig`_ or `doc-sig`_.
+The `doc-sig`_ mailing list will be used to discuss cross-language
+changes on translated documentations.
 
-i18n-sig looks oriented towards i18n APIs [1]_, but doc-sig looks the
-right place to speak about this [2]_, so we don't have to create a new
-mailing list for this, we should use doc-sig.
+There is also the i18n-sig list but it's more oriented towards i18n APIs
+[1]_, than translation the Python documentation.
 
 .. _i18n-sig: https://mail.python.org/mailman/listinfo/i18n-sig
 .. _doc-sig: https://mail.python.org/mailman/listinfo/doc-sig
@@ -243,7 +268,7 @@ single channel, and it's also natural for the local teams to reuse
 their local channels like "#python-fr" for french translators.
 
 
-Repository for Po Files
+Repository for PO Files
 '''''''''''''''''''''''
 
 Considering that each translation teams may want to use different
@@ -252,15 +277,15 @@ with git, all translations should expose their ``.po`` files via a git
 repository.
 
 Considering that each translation will be exposed via git
-repositories, and that Python has migrated to github, translations
-should be hosted on github.
+repositories, and that Python has migrated to GitHub, translations
+will be hosted on github.
 
 For consistency and discoverability, all translations should be in the
 same github organization and named according to a common pattern.
 
 Considering that we want translations to be official, and that Python
 already have a github organization, translations should be hosted as
-projects of the `Python github organization`_.
+projects of the `Python documentation GitHub organization`_.
 
 For consistency, translations repositories should be called
 ``python-docs-LANGUAGE_TAG`` [22]_.
@@ -275,11 +300,11 @@ process who translated what.
 
 Version can be hosted on different repositories, different directories
 or different branches.  Storing them on different repositories will
-probably pollute the Python github organization.  As it is typical and
-natural to use branches to separate versions, branches should be used
-to do so.
+probably pollute the Python documentation github organization.  As it
+is typical and natural to use branches to separate versions, branches
+should be used to do so.
 
-.. _Python github organization: https://github.com/python/
+.. _Python documentation GitHub organization: https://github.com/python-docs/
 
 
 Translation tools
@@ -287,15 +312,17 @@ Translation tools
 
 Most of the translation work is actually done on Transifex [15]_.
 
-TODO::
+Other tools may be used later https://pontoon.mozilla.org/
+and http://zanata.org/
 
-    But Mozilla and Fedora have their own translation web site.  I
-    (Inada) want to evaluate them, because they are Python friends.
-    Requirement (Julien): The tool may help us validating each
-    translators have signed the CLA.
 
-    - https://pontoon.mozilla.org/
-    - http://zanata.org/
+Contributor Agreement
+'''''''''''''''''''''
+
+Contributions to translated documentation will be requested to sign the
+Python Contributor Agreement (CLA):
+
+https://www.python.org/psf/contrib/contrib-form/
 
 
 Language Team
@@ -305,14 +332,13 @@ Each language team should have one coordinator responsible to:
 
 - Manage the team
 - Choose and manage the tools its team will use (chat, mailing list, …)
-- Ensure contributors agree with the CLA
+- Ensure contributors understand and agree with the CLA
 - Ensure quality (grammar, vocabulary, consistency, filtering spam, ads, …)
-- Do redirect to github issue tracker issues related to its
+- Do redirect to GitHub issue tracker issues related to its
   language on bugs.python.org
 
-
-License should be PSF License, and copyright should be able to
-transferred to PSF later.
+The license will be the `PSF License <https://docs.python.org/3/license.html>`_,
+and copyright should be transferable to PSF later.
 
 
 Alternatives
@@ -338,15 +364,15 @@ from only 3K active users; but the Simple English Wikipedia has just
 Esperanto!
 
 
-Overall Procedure
-=================
+Changes
+=======
 
-Migrate Github Repositories
+Migrate GitHub Repositories
 ---------------------------
 
-We (authors of this PEP) already own french and japanese git
-repositories, so moving them to the Python organization will not be a
-problem. We'll however follow the `New Translation Procedure`_.
+We (authors of this PEP) already own french and japanese Git
+repositories, so moving them to the Python documentation organization will not be a
+problem.  We'll however follow the `New Translation Procedure`_.
 
 
 Patch docsbuild-scripts to Compile Translations
@@ -354,12 +380,12 @@ Patch docsbuild-scripts to Compile Translations
 
 Docsbuild-script must be patched to:
 
- - List the languages tags to build along with the branches to build.
- - List the languages tags to display in the language picker.
- - Find translation repositories by formatting
-   "github.com:python/python-docs-{language_tag}.git" (See
-   `Repository for Po Files`_)
- - Build translations for each branches and each languages
+- List the languages tags to build along with the branches to build.
+- List the languages tags to display in the language picker.
+- Find translation repositories by formatting
+  ``github.com:python-docs/python-docs-{language_tag}.git`` (See
+  `Repository for Po Files`_)
+- Build translations for each branches and each languages
 
 Patched docsbuild-scripts must only open ``.po`` files from
 translation repositories.
@@ -376,7 +402,7 @@ Create sphinx-doc Language Picker
 ---------------------------------
 
 Highly similar to the version picker, a language picker must be
-implemented. This language picker must be configurable to hide or
+implemented.  This language picker must be configurable to hide or
 show a given language.
 
 
@@ -406,12 +432,12 @@ Create github repository
 ------------------------
 
 Create a repository named "python-docs-{LANGUAGE_TAG}" on the Python
-github organization (See `Repository For Po Files`_.), and grant the
+documentation github organization (See `Repository For Po Files`_.), and grant the
 language coordinator push rights to this repository.
 
 
-Add translation in docsbuild-scripts
-------------------------------------
+Add support for translations in docsbuild-scripts
+-------------------------------------------------
 
 As soon as the translation hits its firsts commits, update the
 docsbuild-scripts configuration to build the translation (but not
